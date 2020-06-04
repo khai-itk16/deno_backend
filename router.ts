@@ -6,8 +6,10 @@ import authenticate from './middleware/authenticate.ts'
 const router = new Router()
 
 router.get('/tasks',authenticate , taskController.getTask)
+router.get('/tasks/:keySearch', authenticate , taskController.search)
 router.post('/task',authenticate, taskController.createTask)
 router.put('/task/:taskId',authenticate, taskController.updateTask)
+router.delete('/task/:taskId', authenticate, taskController.deleteTask)
 
 router.get('/account/get/:id',authenticate, accountController.getAccount);
 router.post('/account/add',authenticate, accountController.addAccount);

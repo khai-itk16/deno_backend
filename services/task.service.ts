@@ -1,5 +1,5 @@
 import db from '../connection/connectMysql.ts'
-import { Task, status, FindMany, UpdateOne, FindOne } from '../model/task.model.ts'
+import { Task, status, FindMany, UpdateOne, FindOne, Filter } from '../model/task.model.ts'
 import { buildWhereClause, buildInsertQuery } from '../helper/get.ts'
 
 export const createOne= async (task: Task) => {
@@ -32,6 +32,35 @@ export const findMany = async (findmany: FindMany) => {
         throw error
     }
 }
+
+
+export const filter = async (filter: Filter) => {
+    try {
+
+        //const query = buildWhereClause(findmany)
+        const sql = `SELECT * FROM task where account_id = ${filter.account_id} and (taskName like "%${filter.keySearch}%"
+        or status like "%${filter.keySearch}%")`
+
+        console.log(sql)
+
+        const result = await db.execute(sql)
+
+        return result.rows
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}
+
+
+
+
+
+
+
+
+
+
 
 export const updateOne = async (findOne: FindOne, updateOne: UpdateOne) => {
     try {

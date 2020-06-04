@@ -1,4 +1,4 @@
-import { createOne, findMany, updateOne, deleteOne } from '../services/task.service.ts'
+import { createOne, findMany, updateOne, deleteOne, filter } from '../services/task.service.ts'
 import { Task, status } from '../model/task.model.ts'
 async function getTask (context: any) {
     try {
@@ -7,6 +7,22 @@ async function getTask (context: any) {
 
 
         const tasks = await findMany({ account_id: credential.account_id, ...query.value})
+
+        context.response.body = {
+            isSuccess: true,
+            list: tasks
+        }
+    } catch (error) {
+        context.response.body = error
+    }
+}
+
+async function search (context: any) {
+    try {
+        const credential: any = context.request.user.payload
+        const  keySearch: string = context.params.keySearch
+
+        const tasks = await filter({ account_id: credential.account_id, keySearch })
 
         context.response.body = {
             isSuccess: true,
@@ -37,11 +53,19 @@ async function createTask (context: any) {
 
 async function updateTask (context: any) {
     try {
-        const taskId = context.params.taskId
+        console.log('OKE')
+        const { taskId } = context.params
 
-        const updateOne = await context.request.body()
+        const update = await context.request.body()
 
-        const updateTask = await updateOne({taskId}, updateOne)
+        const updateTask = await updateOne({taskId}, update.value)
+
+        context.response.body = {
+            isSuccess: true,
+            data: updateTask,
+        }
+
+        return
     } catch (error) {
         context.response.body = error
     }
@@ -52,6 +76,12 @@ async function deleteTask (context: any) {
         const taskId = context.params.taskId
 
         const updateTask = await deleteOne(taskId)
+
+        context.response.body = {
+            isSuccess: true,
+        }
+
+        return
     } catch (error) {
         context.response.body = error
     }
@@ -61,4 +91,6 @@ export default {
     getTask,
     createTask,
     updateTask,
+    deleteTask,
+    search
 }

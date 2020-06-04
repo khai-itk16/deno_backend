@@ -16,7 +16,7 @@ const authenticate = async (context: any, next: any) => {
         const decode = await validateJwt(token, api.secret)
 
         context.request.user = decode
-        return next(context);
+        return next(context)
 
     } catch (error) {
         context.response.body = {

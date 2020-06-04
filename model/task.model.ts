@@ -18,6 +18,11 @@ export interface FindMany {
     account_id?: number,
 }
 
+export interface Filter {
+    keySearch: string,
+    account_id: number,
+}
+
 export interface UpdateOne {
     taskName?: string,
     startTime?: Date,
