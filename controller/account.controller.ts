@@ -71,21 +71,26 @@ async function signUp (context: any) {
     try {
         const data = await context.request.body()
         const { username, password, fullname } = data.value
-        if (!username || password || typeof username === 'string'|| typeof password === 'string'
+        if (!username || !password || typeof username === 'undefined'|| typeof password === 'undefined'
         || username === '') {
+            context.response.status = 400
             context.response.body = {
                 error: 401,
                 message: 'invalid username or password'
             }
+            return
         }
 
         const user = await findByUsername(username)
 
         if (user) {
+            
+            context.response.status = 400
             context.response.body = {
                 error: 400,
-                message: 'this username isalready exist'
+                message: 'this username is already exist'
             }
+            return
         }
 
         const newAccount = await insert({fullname, username, password}) 
@@ -102,9 +107,12 @@ async function signUp (context: any) {
         const key = api.secret
 
         const token = makeJwt({ header, payload, key})
+        
+        context.response.status = 200
         context.response.body = {
             accessToken: token
         }
+        return
 
     } catch (error) {
         
